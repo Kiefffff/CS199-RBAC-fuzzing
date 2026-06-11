@@ -54,5 +54,5 @@ This repository contains the source code, configurations, and data for the thesi
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/Kiefffff/bac-fuzzing-rbac.git
-   cd bac-fuzzing-rbac
+   git clone https://github.com/Kiefffff/CS199-RBAC-fuzzing.git
+   cd CS199-RBAC-fuzzing
