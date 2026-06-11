@@ -1,0 +1,108 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Juice Shop BAC Spec (ZAP Spider Enhanced)",
+    "version": "1.0.0",
+    "description": "OpenAPI spec built from ZAP Spider CSV for Phase 3 BAC testing"
+  },
+  "servers": [
+    { "url": "http://localhost:3000" }
+  ],
+  "paths": {
+    "/rest/basket/{id}": {
+      "get": {
+        "summary": "Get Basket (BOLA)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer", "minimum": 1 } }
+        ],
+        "responses": {
+          "200": { "description": "Basket data" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" },
+          "404": { "description": "Not Found" }
+        }
+      }
+    },
+    "/rest/admin/application-configuration": {
+      "get": {
+        "summary": "Admin Config (BFLA)",
+        "responses": {
+          "200": { "description": "Configuration JSON" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/rest/admin/application-version": {
+      "get": {
+        "summary": "Admin Version (BFLA)",
+        "responses": {
+          "200": { "description": "Version info" },
+          "401": { "description": "Unauthorized" },
+          "403": { "description": "Forbidden" }
+        }
+      }
+    },
+    "/rest/user/whoami": {
+      "get": {
+        "summary": "Get Current User (BFLA)",
+        "responses": {
+          "200": { "description": "User profile" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/rest/products/search": {
+      "get": {
+        "summary": "Product Search (Access Control + Input Validation)",
+        "parameters": [
+          { "name": "q", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Search results" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/Challenges": {
+      "get": {
+        "summary": "List Challenges (BFLA)",
+        "responses": {
+          "200": { "description": "Challenge list" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/rest/products": {
+      "get": {
+        "summary": "List Products (BOLA - Product Tampering)",
+        "responses": {
+          "200": { "description": "Product list" }
+        }
+      }
+    },
+    "/rest/user/login": {
+      "post": {
+        "summary": "User Login (Auth Flow)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful, returns JWT" },
+          "401": { "description": "Invalid credentials" }
+        }
+      }
+    }
+  }
+}

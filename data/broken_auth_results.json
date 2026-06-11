@@ -1,0 +1,18 @@
+[
+  {
+    "email": "admin@crapi.io",
+    "status": 401
+  },
+  {
+    "email": "mechanic@crapi.io",
+    "status": 401
+  },
+  {
+    "email": "user1@crapi.io",
+    "status": 401
+  },
+  {
+    "email": "user2@crapi.io",
+    "status": 401
+  }
+]
