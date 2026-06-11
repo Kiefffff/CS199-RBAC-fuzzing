@@ -1,0 +1,75 @@
+Fuzzer,Endpoint,Fuzzed? (Y/N),Notes,METRICS FOR RESEARCH
+ZAP - JuiceShop,/rest/user/whoami,Y,"Crawled, but stateless → could not detect BOLA",
+ZAP - JuiceShop,/rest/basket/{id},Y,"Crawled GET, PUT not fully tested for other users’ baskets",# Unique RBAC endpoints fuzzed = 5
+ZAP - JuiceShop,/rest/basket/{id} (PUT),Y,"Attempted PUT, but stateless → failed BOLA detection",# Total RBAC endpoints = 5
+ZAP - JuiceShop,/rest/admin/application-configuration,Y,"Endpoint discovered, but no role-based fuzzing done",Endpoint Coverage = 5 / 5 = 100%
+ZAP - JuiceShop,/rest/order/{id},Y,"Crawled, but sequence/auth not tracked → missed BOLA",
+ZAP - JuiceShop (w/ Minimal Spec),/rest/user/whoami,Y,"Crawled, but stateless → could not detect BOLA",
+ZAP - JuiceShop (w/ Minimal Spec),/rest/basket/{id},Y,"Crawled GET, PUT not fully tested for other users’ baskets",# Unique RBAC endpoints fuzzed = 5
+ZAP - JuiceShop (w/ Minimal Spec),/rest/basket/{id} (PUT),Y,"Attempted PUT, but stateless → failed BOLA detection",# Total RBAC endpoints = 5
+ZAP - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,Y,"Endpoint discovered, but no role-based fuzzing done",Endpoint Coverage = 5 / 5 = 100%
+ZAP - JuiceShop (w/ Minimal Spec),/rest/order/{id},Y,"Crawled, but sequence/auth not tracked → missed BOLA",
+ZAP - crAPI,/identity/api/v2/vehicle/{vehicleId}/location,Y,"Crawled, but stateless → cannot detect BOLA",# Unique RBAC endpoints fuzzed = 3
+ZAP - crAPI,/workshop/api/mechanic/mechanic_report?report_id={id},Y,"Crawled, but sequence/auth not tracked → missed BOLA",# Total RBAC endpoints = 3
+ZAP - crAPI,/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Y,"Fuzzed as public endpoint, but brute-force not triggered",Endpoint Coverage = 3 / 3 = 100%
+ZAP - crAPI (w/ OpenAPI),/identity/api/v2/vehicle/{vehicleId}/location,Y,"Crawled, but stateless → cannot detect BOLA",# Unique RBAC endpoints fuzzed = 3
+ZAP - crAPI (w/ OpenAPI),/workshop/api/mechanic/mechanic_report?report_id={id},Y,"Crawled, but sequence/auth not tracked → missed BOLA",# Total RBAC endpoints = 3
+ZAP - crAPI (w/ OpenAPI),/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Y,"Fuzzed as public endpoint, but brute-force not triggered",Endpoint Coverage = 3 / 3 = 100%
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/user/whoami,Y (but spec forced it),-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/basket/{id},Y (but spec forced it),-,# Unique RBAC endpoints fuzzed = 5
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/basket/{id} (PUT),Y (but spec forced it),-,# Total RBAC endpoints = 5
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,Y (but spec forced it),-,Endpoint Coverage = 5 / 5 = 100%
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/order/{id},Y (but spec forced it),-,
+Schemathesis - crAPI,/identity/api/v2/vehicle/{vehicleId}/location,Y,"Tested with random UUIDs (e.g., 1929186d-8b67-4163-a208-de52a41f7301). Returned 401 Unauthorized without token 
+so auth properly enforced.  No BOLA detected. Test Case IDs: 2DFKW5, 2CqciW",
+Schemathesis - crAPI,/workshop/api/mechanic/mechanic_report?report_id={id},Y,"Tested with report_id=0 and random integers. Returned 500 Internal Server Error and 400 Bad Request. 
+Auth enforced with token. No BOLA detected (proper ownership validation). Test Case IDs: 94dEe1, 48dkEE",# Unique RBAC endpoints fuzzed = 4
+Schemathesis - crAPI,/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Y,"Returned 500 Internal Server Error with message ""Otp was not found for parameters {OTP Details Not Found=email}"" 
+which leaks email existence via error message. Test Case ID: yptfzK",# Total RBAC endpoints = 4
+Schemathesis - crAPI, /identity/api/v2/user/dashboard,Y,,Endpoint Coverage = 4 / 4 = 100%
+Schemathesis - VAmPI,/users/v1/_debug,Y,"All tests passed; response matched OpenAPI schema structure. 
+Sensitive data exposure (passwords) not flagged by default conformance checks.",
+Schemathesis - VAmPI,/users/v1/login,Y,No alerts generated; semantic analysis of error messages (enumeration) not performed by default property-based checks.,# Unique RBAC endpoints fuzzed = 5
+Schemathesis - VAmPI,/books/v1/{id},Y,Missing valid test data. Repeated 404 responses prevented testing of actual BOLA logic on existing resources.,# Total RBAC endpoints = 5
+Schemathesis - VAmPI,/users/v1/{user}/password,Y,Schema validation mismatch. Successful modifications (204) not flagged as potential unauthorized actions without custom assertions.,Endpoint Coverage = 5 / 5 = 100%
+Schemathesis - VAmPI,/users/v1/register,Y,"No alerts; mass assignment vectors (e.g., admin:true parameter) not generated as they are absent from OpenAPI specification.",
+ZAP - VAmPI,/users/v1/_debug,Y,Stateless active scan; response schema-compliant (200 OK) so no alert triggered despite password exposure.,
+ZAP - VAmPI,/users/v1/login,Y,Active scan performed; error message semantics (enumeration) not analyzed by default rules.,# Unique RBAC endpoints fuzzed = 5
+ZAP - VAmPI,/books/v1/{id},Y,Active scan performed; likely received 404s due to unknown IDs; ownership logic not tested without valid resource IDs.,# Total RBAC endpoints = 5
+ZAP - VAmPI,/users/v1/{user}/password,Y,Active scan performed; successful modification (204) not flagged as unauthorized without custom logic.,Endpoint Coverage = 5 / 5 = 100%
+ZAP - VAmPI,/users/v1/register,Y,Active scan performed; admin:true parameter not in OpenAPI spec so not fuzzed by ZAP.,
+EvoMaster - VAmPI,/users/v1/_debug,Y,Stateful test with JWT; returned 200 with sensitive data,
+EvoMaster - VAmPI,/users/v1/{username},Y,Tested with manipulated username parameter; returned other user's data,
+EvoMaster - VAmPI,PUT:/users/v1/{username}/email,Y,Returned 500/401; auth enforced on retry,
+EvoMaster - VAmPI,DELETE:/users/v1/{username},Y,Returned 500/401; auth enforced,# Unique RBAC endpoints fuzzed = 8
+EvoMaster - VAmPI,GET:/me,Y,Returned 401 for invalid token; auth working,# Total RBAC endpoints = 8
+EvoMaster - VAmPI,POST:/books/v1,Y,Schema validation fault; not BAC-relevant,Endpoint Coverage = 8 / 8 = 100%
+EvoMaster - VAmPI,GET:/books/v1/{book_title},Y,Returned 401 for invalid ID; auth working,
+EvoMaster - VAmPI,PUT:/users/v1/{username}/password,Y,Returned 401 for unauthorized modification; auth working,
+EvoMaster - crAPI,/workshop/api/management/users/all,Y,Stateful test with user token; returned 200 with admin-level user list,
+EvoMaster - crAPI,/identity/api/v2/vehicle/{vehicleId}/location,Y,Tested with manipulated vehicleId; returned other user's vehicle location,
+EvoMaster - crAPI,workshop/api/shop/orders/{order_id},Y,Tested with arbitrary order_id; returned other user's order details,
+EvoMaster - crAPI,POST:/identity/api/auth/login,Y,        Returned 403 for duplicate signup; input validation working,# Unique RBAC endpoints fuzzed = 7
+EvoMaster - crAPI,GET:/identity/api/v2/user/dashboard,Y,Returned 404 for unauthenticated; auth enforcement working,# Total RBAC endpoints = 7
+EvoMaster - crAPI,POST:/community/api/v2/coupon/new-coupon,Y,Schema validation fault; not BAC-relevant,Endpoint Coverage = 7 / 7 = 100%
+EvoMaster - crAPI,PUT:/identity/api/v2/user/videos/{video_id},Y,Returned 401 for unauthorized modification; auth working,
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,Y,Stateful test with customer token; returned 200 with admin config,
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/admin/application-version,Y,Returned 200 with version info to non-admin token,
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/basket/{id},Y,Tested with manipulated id; mixed 200/401 responses,# Unique RBAC endpoints fuzzed = 5
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/user/whoami,Y,Returned 200 with authenticated user data so correct behavior,# Total RBAC endpoints = 5
+EvoMaster - JuiceShop (w/ Minimal Spec),/api/Challenges,Y,Returned 200 with public challenge list which is not BAC-relevant,Endpoint Coverage = 5 / 5 = 100%
+EvoMaster - JuiceShop (w/ Minimal Spec),POST:/rest/user/login,Y,Auth flow working correctly,
+EvoMaster - JuiceShop (w/ Minimal Spec),GET:/rest/products,Y,"Returned 500 which is the server error, not BAC-relevant",
+EvoMaster - Strapi,GET:/api/users,Y,"Returned 403 Forbidden correct auth enforcement, not a flaw",
+EvoMaster - Strapi,GET:/api/users/{id},Y,"Returned 403 Forbidden  correct auth enforcement, not a flaw",# Unique RBAC endpoints fuzzed = 7
+EvoMaster - Strapi,PUT:/api/users/{id},Y,"Returned 403 Forbidden  correct auth enforcement, not a flaw",# Total RBAC endpoints = 7
+EvoMaster - Strapi,DELETE:/api/users/{id},Y,"Returned 403 Forbidden  correct auth enforcement, not a flaw",Endpoint Coverage = 7 / 7 = 100%
+EvoMaster - Strapi,GET:/api/articles,Y,"Returned 200 OK but response body didn't match spec schema mismatch, not BAC",
+EvoMaster - Strapi,GET:/api/tests,Y,"Returned 200 OK but response body didn't match spec  schema mismatch, not BAC",
+EvoMaster - Strapi,POST:/api/auth/local,Y,"Returned 429 Too Many Requests rate limiting working, not BAC",
+ZAP - Strapi,User Management (/api/users/*),Y,All alerts were security headers; no BAC flaw,# Unique RBAC endpoints fuzzed = 0
+ZAP - Strapi,"Content Management (/api/articles/*, /api/tests/*)",Y,All alerts were info disclosure/tech detection; no BAC flaws,# Total RBAC endpoints = 0
+ZAP - Strapi,Authentication (/api/auth/*),Y,Auth endpoint detected; no BAC flaws,Endpoint Coverage = 0 / 0 = 0%
+Schemathesis - Strapi,User Management (/api/users/*),Y,All returned 403 without auth : auth working,# Unique RBAC endpoints fuzzed = 0
+Schemathesis - Strapi,"Content Management (/api/articles/*, /api/tests/*)",Y,GET endpoints returned 200 (public); POST/PUT/DELETE returned 403,# Total RBAC endpoints = 0
+Schemathesis - Strapi,Authentication (/api/auth/*),Y,Auth flow tested; schema validation mismatches,Endpoint Coverage = 0 / 0 = 0%

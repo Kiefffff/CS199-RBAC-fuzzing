@@ -1,0 +1,16 @@
+Fuzzer,Target,Duration (s),Total Requests Sent,Total Alerts,BAC True Positives,BAC False Positives,BAC True Positives = number of known BOLA/BFLA vulnerabilities detected
+ZAP,Juice Shop,119,614,17,0,17,
+ZAP,JuiceShop (w/ Minimal Spec),510,9746,14,0,14,BAC False Positives = alerts that are not BAC-relevant
+ZAP,crAPI,125,119,17,0,17,
+ZAP,crAPI ( w/ OpenApi),661,19847,17,0,17,
+Schemathesis,JuiceShop (w/ Minimal Spec),5,106,20,0,20,
+Schemathesis,crAPI,1485,1546,124,2,15,
+Schemathesis,VAmPI,~345,176,0,0,0,"-Schemathesis default checks validate schema conformance, not authorization semantics. Manual verification confirmed 2 BAC vulnerabilities .
+"
+ZAP,VAmPI,432,3316,22,0,22,
+EvoMaster,VAmPI,300,"28,991",17,2,15,
+EvoMaster,crAPI,308,"8,020",71,3,68,
+EvoMaster,JuiceShop (w/ Minimal Spec),300,"23,591",9,2,7,
+EvoMaster,Strapi,300,"68,180",17,0,17,
+ZAP,Strapi,420,7103,22,0,22,
+Schemathesis,Strapi,~50,228,28,0,2,

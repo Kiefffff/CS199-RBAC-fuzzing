@@ -1,0 +1,83 @@
+Fuzzer ,Endpoint,BAC Type,Classification,Time to Detection (s) ,Notes/Evidence ,METRICS FOR RESEARCH
+ZAP - JuiceShop,/rest/user/whoami,BOLA,"(B) Fuzzed, No Alert",N/A,Stateless scan; missed horizontal access to other users’ profiles,
+ZAP - JuiceShop,/rest/basket/{id},BOLA,"(B) Fuzzed, No Alert",N/A,Scan did not track JWT/session; unable to access other users’ baskets,
+ZAP - JuiceShop,/rest/basket/{id} (PUT),BOLA,"(B) Fuzzed, No Alert",N/A,Cannot modify other users’ baskets without stateful requests,
+ZAP - JuiceShop,/rest/admin/application-configuration,BFLA,"(B) Fuzzed, No Alert",N/A,Stateless scan; admin-only endpoints not accessed,
+ZAP - JuiceShop,/rest/order/{id},BOLA,"(B) Fuzzed, No Alert",N/A,Sequence-dependent; missed without authenticated session,"Coverage is 100%, but detection of BAC flaws = 0/5."
+ZAP - JuiceShop (w/ Minimal Spec),/rest/user/whoami,BOLA,"(B) Fuzzed, No Alert",N/A,Stateless scan; missed horizontal access to other users’ profiles,
+ZAP - JuiceShop (w/ Minimal Spec),/rest/basket/{id},BOLA,"(B) Fuzzed, No Alert",N/A,Scan did not track JWT/session; unable to access other users’ baskets,
+ZAP - JuiceShop (w/ Minimal Spec),/rest/basket/{id} (PUT),BOLA,"(B) Fuzzed, No Alert",N/A,Cannot modify other users’ baskets without stateful requests,
+ZAP - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,BFLA,"(B) Fuzzed, No Alert",N/A,Stateless scan; admin-only endpoints not accessed,
+ZAP - JuiceShop (w/ Minimal Spec),/rest/order/{id},BOLA,"(B) Fuzzed, No Alert",N/A,Sequence-dependent; missed without authenticated session,"Coverage is 100%, but detection of BAC flaws = 0/5."
+ZAP - crAPI ,/identity/api/v2/vehicle/{vehicleId}/location,BOLA,"(B) Fuzzed, No Alert",N/A,Stateless scan; could not leak other vehicle IDs,
+ZAP - crAPI,/workshop/api/mechanic/mechanic_report?report_id={id},BOLA,"(B) Fuzzed, No Alert",N/A,Sequence-dependent; report ID enumeration not detected,"Coverage is 100%, but detection of BAC flaws = 0/3."
+ZAP - crAPI,/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Broken User Auth,"(B) Fuzzed, No Alert",N/A,Requires OTP/email brute-force; not triggered by generic fuzzing,
+ZAP - crAPI (w/ OpenAPI),/identity/api/v2/vehicle/{vehicleId}/location,BOLA,"(B) Fuzzed, No Alert",N/A,-,
+ZAP - crAPI (w/ OpenAPI),/workshop/api/mechanic/mechanic_report?report_id={id},BOLA,"(B) Fuzzed, No Alert",N/A,-,
+ZAP - crAPI (w/ OpenAPI),/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Broken User Auth,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/user/whoami,BOLA,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/basket/{id},BOLA,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/basket/{id} (PUT),BOLA,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,BFLA,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - JuiceShop (w/ Minimal Spec),/rest/order/{id},BOLA,"(B) Fuzzed, No Alert",N/A,-,
+Schemathesis - crAPI,/identity/api/v2/vehicle/{vehicleId}/location,BOLA,"(B) Fuzzed, No Alert",~1200,"Returned 401 Unauthorized without token (correct behavior). Auth properly enforced. No BOLA detected. curl -X GET 
+http://localhost:8888/identity/api/v2/vehicle/1929186d-8b67-4163-a208-de52a41f7301/location → 401",
+Schemathesis - crAPI,/workshop/api/mechanic/mechanic_report?report_id={id},BOLA,"(A)  Fuzzed, Alert",~1250,"Returned 400 Bad Request for invalid report_id and 500 for server error. Auth enforced with token. No BOLA detected (proper ownership validation). 
+curl -X GET -H 'Authorization: [Filtered]' 'http://localhost:8888/workshop/api/mechanic/mechanic_report?report_id=0' → 400","Coverage is 100%, but detection of BAC flaws = 2/4."
+Schemathesis - crAPI,/identity/api/auth/forget-password + /identity/api/auth/v3/check-otp,Broken User Auth,"(A)  Fuzzed, Alert",~350,"Returned 500 Internal Server Error with message ""Otp was not found for parameters {OTP Details Not Found=email}"" which leaks email existence via error message. 
+curl -X POST -H 'Authorization: [Filtered]' -H 'Content-Type: application/json' -d '{""otp"": ""9969"", ""email"": ""test@example.com""}' → 500 with email in error",
+Schemathesis - crAPI, /identity/api/v2/user/dashboard,Enumeration,"(A)  Fuzzed, Alert",~418,"curl -X GET http://localhost:8888/identity/api/v2/user/dashboard returned 404 Not Found with message 
+""Given Email is not registered!"" instead of generic 401. Enables email enumeration via response differentiation.",
+Schemathesis - VAmPI,/users/v1/_debug,BFLA,"(B) Fuzzed, No Alert",N/A,,
+Schemathesis - VAmPI,/users/v1/login,Enumeration,"(B) Fuzzed, No Alert",N/A,,
+Schemathesis - VAmPI,/books/v1/{id},BOLA,"(B) Fuzzed, No Alert",N/A,,"Coverage is 100%, but detection of BAC flaws = 0."
+Schemathesis - VAmPI,/users/v1/{user}/password,BOLA,"(B) Fuzzed, No Alert",N/A,,
+Schemathesis - VAmPI,/users/v1/register,Mass Assignment,"(B) Fuzzed, No Alert",N/A,,
+ZAP - VAmPI,/users/v1/_debug,BFLA,"(B) Fuzzed, No Alert",N/A,,
+ZAP - VAmPI,/users/v1/login,Enumeration,"(B) Fuzzed, No Alert",N/A,,
+ZAP - VAmPI,/books/v1/{id},BOLA,"(B) Fuzzed, No Alert",N/A,,"Coverage is 100%, but detection of BAC flaws = 0."
+ZAP - VAmPI,/users/v1/{user}/password,BOLA,"(B) Fuzzed, No Alert",N/A,,
+ZAP - VAmPI,/users/v1/register,Mass Assignment,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - VAmPI,/users/v1/_debug,BFLA,"(A)  Fuzzed, Alert",~180,"GET /users/v1/_debug returned 200 OK with sensitive data (password, admin fields) to non-admin token. 
+Test Case: EvoMaster_successes_Test.py#test_9_get_on__debug_returns_object",
+EvoMaster - VAmPI,/users/v1/{username},BOLA,"(A)  Fuzzed, Alert",~210,"GET /users/v1/{username} returned 200 OK with another user's profile data when username parameter was manipulated. 
+Test Case: EvoMaster_successes_Test.py#test_8_get_on_v1_returns_object",
+EvoMaster - VAmPI,PUT:/users/v1/{username}/email,BFLA (potential),"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - VAmPI,DELETE:/users/v1/{username},BFLA (potential),"(B) Fuzzed, No Alert",N/A,,"Coverage is 100%, but detection of BAC flaws = 2/8."
+EvoMaster - VAmPI,GET:/me,Auth Enforcement,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - VAmPI,POST:/books/v1,Schema Validation,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - VAmPI,GET:/books/v1/{book_title},Auth Enforcement,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - VAmPI,PUT:/users/v1/{username}/password,Auth Enforcement,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - crAPI,/workshop/api/management/users/all,BFLA,"(A)  Fuzzed, Alert",~240,"GET /workshop/api/management/users/all returned 200 OK with full user list to non-admin token. 
+Test Case: EvoMaster_faults_Test.py#test_37_get_on_all_returnsMismatchResponseWithSchema",
+EvoMaster - crAPI,/identity/api/v2/vehicle/{vehicleId}/location,BFLA ,"(A)  Fuzzed, Alert",~265,"GET /identity/api/v2/vehicle/{vehicleId}/location returned 200 OK with location data when vehicleId was manipulated to access other users' vehicles. 
+Test Case: EvoMaster_successes_Test.py#test_27_get_on_location_returns_object",
+EvoMaster - crAPI,workshop/api/shop/orders/{order_id},BOLA,"(A)  Fuzzed, Alert",~280,"GET /workshop/api/shop/orders/{order_id} returned 200 OK with order details for arbitrary order_id, allowing access to other users' orders. 
+Test Case: EvoMaster_faults_Test.py#test_39_get_on_order_returnsMismatchResponseWithSchema",
+EvoMaster - crAPI,POST:/identity/api/auth/login,BOLA,"(B) Fuzzed, No Alert",N/A,,"Coverage is 100%, but detection of BAC flaws = 3/7."
+EvoMaster - crAPI,GET:/identity/api/v2/user/dashboard,Auth Enforcement,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - crAPI,POST:/community/api/v2/coupon/new-coupon,Schema Validation,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - crAPI,PUT:/identity/api/v2/user/videos/{video_id},Auth Enforcement,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/admin/application-configuration,BFLA,"(A)  Fuzzed, Alert",~210,"ET /rest/admin/application-configuration returned 200 OK with admin config data to non-admin token. 
+Test Case: EvoMaster_faults_Test.py#test_6_get_on_application_configuration_returnsMismatchResponseWithSchema",
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/admin/application-version,BFLA,"(A)  Fuzzed, Alert",~225,"GET /rest/admin/application-version returned 200 OK with version info to non-admin token. 
+Test Case: EvoMaster_faults_Test.py#test_5_get_on_application_version_returnsMismatchResponseWithSchema",
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/basket/{id},BOLA (potential),"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - JuiceShop (w/ Minimal Spec),/rest/user/whoami,Auth Flow,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - JuiceShop (w/ Minimal Spec),/api/Challenges,Info Disclosure,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - JuiceShop (w/ Minimal Spec),POST:/rest/user/login,Auth Flow,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - JuiceShop (w/ Minimal Spec),GET:/rest/products,Public Endpoint,"(B) Fuzzed, No Alert",N/A,,
+EvoMaster - Strapi,GET:/api/users,BFLA (Expected Secure),"(D) Fuzzed, No Alert, Not BAC Flaw",~120,"Returned 403 Forbidden correct auth enforcement, not a flaw",
+EvoMaster - Strapi,GET:/api/users/{id},BOLA (Expected Secure),"(D) Fuzzed, No Alert, Not BAC Flaw",~140,"Returned 403 Forbidden  correct auth enforcement, not a flaw",
+EvoMaster - Strapi,PUT:/api/users/{id},BFLA (Expected Secure),"(D) Fuzzed, No Alert, Not BAC Flaw",~160,"Returned 403 Forbidden  correct auth enforcement, not a flaw","Coverage is 100%, but no  BAC flaws = 0/0."
+EvoMaster - Strapi,DELETE:/api/users/{id},BFLA (Expected Secure),"(D) Fuzzed, No Alert, Not BAC Flaw",~180,"Returned 403 Forbidden  correct auth enforcement, not a flaw",
+EvoMaster - Strapi,GET:/api/articles,Schema Validation,"(D) Fuzzed, No Alert, Not BAC Flaw",~90,"Returned 200 OK but response body didn't match spec schema mismatch, not BAC",
+EvoMaster - Strapi,GET:/api/tests,Schema Validation,"(D) Fuzzed, No Alert, Not BAC Flaw",~100,"Returned 200 OK but response body didn't match spec  schema mismatch, not BAC",
+EvoMaster - Strapi,POST:/api/auth/local,Rate Limiting,"(D) Fuzzed, No Alert, Not BAC Flaw",~290,"Returned 429 Too Many Requests rate limiting working, not BAC",
+ZAP - Strapi,ALL ENDPOINTS,NOT BAC,"(C) Fuzzed, Alert, Not BAC Flaw",N/A,,"Coverage is 100%, but no  BAC flaws = 0/0."
+Schemathesis - Strapi,GET /api/articles,Info Disclosure,"(C) Fuzzed, Alert, Not BAC Flaw",N/A,Returned 200 without auth which likely intentionally public endpoint,
+Schemathesis - Strapi,GET /api/tests,Info Disclosure,"(C) Fuzzed, Alert, Not BAC Flaw",N/A,Returned 200 without auth which likely intentionally public endpoint,
+Schemathesis - Strapi,GET /api/users,BFLA,"(D) Fuzzed, No Alert, Not BAC Flaw",N/A,Returned 403 without auth probably correct auth enforcement,"Coverage is 100%, but no  BAC flaws = 0/0."
+Schemathesis - Strapi,GET /api/users/{id},BOLA,"(D) Fuzzed, No Alert, Not BAC Flaw",N/A,Returned 403 without auth probably correct auth enforcement,
+Schemathesis - Strapi,PUT /api/users/{id},BFLA,"(D) Fuzzed, No Alert, Not BAC Flaw",N/A,Returned 403 without auth probably correct auth enforcement,
+Schemathesis - Strapi,DELETE /api/users/{id},BFLA,"(D) Fuzzed, No Alert, Not BAC Flaw",N/A,Returned 403 without auth probably correct auth enforcement,

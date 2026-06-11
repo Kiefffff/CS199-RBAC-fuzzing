@@ -1,0 +1,2 @@
+Task ID,Message Type,Req. Timestamp,Method,URL,Code,Reason,RTT,Size Req. Header,Size Req. Body,Size Resp. Header,Size Resp. Body,Highest Alert,State,Payloads
+0,Original,Sun Feb 22 19:51:19 PST 2026,GET,http://127.0.0.1:3000,200,OK,66,228,0,469,75055,Low,,[]
